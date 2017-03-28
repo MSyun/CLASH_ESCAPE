@@ -5,7 +5,12 @@ using Asada;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// タイムアタック用テキスト
+	/// </summary>
 	public class DebugTimeTxt : MonoBehaviour {
+
+		#region variable
 
 		// 画面上に出すテキスト
 		Text m_Text = null;
@@ -17,6 +22,10 @@ namespace Mizuno {
 		//Timeの文字
 		public Text m_TimeText;
 
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -35,7 +44,6 @@ namespace Mizuno {
 				m_TimeText.enabled = false;
 			}
 		}
-		
 
 		/// <summary>
 		/// 更新
@@ -44,6 +52,8 @@ namespace Mizuno {
 			// 現在の時間
 			m_Text.text = TimerConverter.Convert (m_Timer.GameTime);
 		}
+
+		#endregion unity method
 	}
 
 }

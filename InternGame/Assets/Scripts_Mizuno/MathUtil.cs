@@ -2,6 +2,10 @@
 using System.Collections;
 
 namespace Mizuno {
+
+	/// <summary>
+	/// 計算便利クラス
+	/// </summary>
 	public static class MathUtil {
 
 		/// <summary>

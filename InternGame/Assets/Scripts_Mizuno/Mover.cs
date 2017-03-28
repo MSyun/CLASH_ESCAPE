@@ -3,6 +3,9 @@
 
 namespace Mizuno {
 
+	/// <summary>
+	/// 移動系まとめ
+	/// </summary>
 	public class Mover : MonoBehaviour {
 
 		/// <summary>

@@ -4,7 +4,12 @@ using System.Collections;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// ゲーム時間計測
+	/// </summary>
 	public class GameTimer : MonoBehaviour {
+
+		#region variable
 
 		// 経過時間
 		float	m_fGameTime;
@@ -14,6 +19,38 @@ namespace Mizuno {
 		// 最大時間
 		[SerializeField]private float	m_fMaxTime = 600.0f;
 
+		#endregion variable
+
+
+		#region method
+
+		/// <summary>
+		/// リセット
+		/// </summary>
+		void Reset() {
+			m_fGameTime = 0.0f;
+		}
+
+
+		/// <summary>
+		/// 開始
+		/// </summary>
+		public void Play() {
+			m_bPlay = true;
+		}
+
+
+		/// <summary>
+		/// 終了
+		/// </summary>
+		public void End() {
+			m_bPlay = false;
+		}
+
+		#endregion method
+
+
+		#region unity method
 
 		/// <summary>
 		/// アウェイク
@@ -38,28 +75,6 @@ namespace Mizuno {
 			m_fGameTime = Mathf.Clamp( m_fGameTime, 0.0f, m_fMaxTime );
 		}
 
-
-		/// <summary>
-		/// リセット
-		/// </summary>
-		void Reset() {
-			m_fGameTime = 0.0f;
-		}
-
-
-		/// <summary>
-		/// 開始
-		/// </summary>
-		public void Play() {
-			m_bPlay = true;
-		}
-
-
-		/// <summary>
-		/// 終了
-		/// </summary>
-		public void End() {
-			m_bPlay = false;
-		}
+		#endregion unity method
 	}
 }

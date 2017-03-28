@@ -5,12 +5,22 @@ using Asada;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// ステージセレクト用トラック
+	/// </summary>
 	public class TruckVerStageSelect : MonoBehaviour {
+
+		#region variable
 
 		Mover			m_Mover = null;
 
 		// 移動速度
 		[SerializeField]private float	m_fSpeed = 10.0f;
+
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -35,6 +45,8 @@ namespace Mizuno {
 			// トラックの移動
 			m_Mover.WorldMove(m_fSpeed * Time.deltaTime);
 		}
+
+		#endregion unity method
 	}
 
 }

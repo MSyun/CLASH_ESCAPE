@@ -2,13 +2,14 @@
 using System.Collections;
 using Asada;
 
-using Mizuno;
-
 
 namespace Mizuno {
-	
+
+	/// <summary>
+	/// クレジットの終了
+	/// </summary>
 	public class CreditEnd : MonoBehaviour {
-		
+
 		/// <summary>
 		/// 更新
 		/// </summary>

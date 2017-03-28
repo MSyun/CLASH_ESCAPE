@@ -4,7 +4,12 @@ using System.Collections;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// レベル毎の記録クラス
+	/// </summary>
 	public class LevelController : MonoBehaviour {
+
+		#region Singleton
 
 		//----- Singleton
 		private static LevelController mInstance = null;
@@ -14,6 +19,11 @@ namespace Mizuno {
 				return mInstance;
 			}
 		}
+
+		#endregion Singleton
+
+
+		#region enum
 
 		/// <summary>
 		/// ゲーム難易度
@@ -26,35 +36,23 @@ namespace Mizuno {
 			LEVEL_MAX,
 		};
 
+		#endregion enum
+
+
+		#region variable
+
 		// 現在のレベル
-		int		m_nCurrentLevel = (int)_StageLevel.LEVEL_EASY;
+		int m_nCurrentLevel = (int)_StageLevel.LEVEL_EASY;
 
 		// 記録保存
 		[SerializeField]private float[]	m_fRecordTime = new float[(int)_StageLevel.LEVEL_MAX];	// 最速記録
 
 		[SerializeField]private float		m_fDefaultTime = 300.0f;
 
+		#endregion variable
 
-		/// <summary>
-		/// アウェイク
-		/// </summary>
-		void Awake () {
-			//----- Singleton
-			if (mInstance == null) {
-				mInstance = this;
-			} else {
-				Destroy (this);
-				return;
-			}
 
-			DontDestroyOnLoad (this);
-
-			// データ
-			for (int i = 0; i < (int)_StageLevel.LEVEL_MAX; i++) {
-				// 取り出し
-				m_fRecordTime[i] = PlayerPrefs.GetFloat (""+i, m_fDefaultTime);
-			}
-		}
+		#region method
 
 		/// <summary>
 		/// 記録設定
@@ -134,6 +132,34 @@ namespace Mizuno {
 			// ある
 			return true;
 		}
+
+		#endregion method
+
+
+		#region unity method
+
+		/// <summary>
+		/// アウェイク
+		/// </summary>
+		void Awake() {
+			//----- Singleton
+			if (mInstance == null) {
+				mInstance = this;
+			} else {
+				Destroy(this);
+				return;
+			}
+
+			DontDestroyOnLoad(this);
+
+			// データ
+			for (int i = 0; i < (int)_StageLevel.LEVEL_MAX; i++) {
+				// 取り出し
+				m_fRecordTime[i] = PlayerPrefs.GetFloat("" + i, m_fDefaultTime);
+			}
+		}
+
+		#endregion unity method
 	}
 
 }

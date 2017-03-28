@@ -5,7 +5,12 @@ using Asada;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// 車用クラス
+	/// </summary>
 	public class Car : MonoBehaviour {
+
+		#region variable
 
 		// 現在の難易度
 		int		m_nCurLevel = 0;
@@ -34,6 +39,30 @@ namespace Mizuno {
 		// サウンド
 		bool	m_bSE = false;
 
+		#endregion variable
+
+
+		#region method
+
+		/// <summary>
+		/// 警告判定
+		/// </summary>
+		/// <param name="Dist">自身とプレイヤーとの距離</param>
+		void Caution(float Dist) {
+			if (m_bCaution ||
+				Dist >= m_fCautionDist[m_nCurLevel])
+				return;
+
+			m_bCaution = true;
+
+			// 警告を表示
+			GameObject.Find("CautionImage").GetComponent<CautionImage>().Display();
+		}
+
+		#endregion method
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -87,21 +116,6 @@ namespace Mizuno {
 		}
 
 		/// <summary>
-		/// 警告判定
-		/// </summary>
-		/// <param name="Dist">自身とプレイヤーとの距離</param>
-		void Caution( float Dist ) {
-			if (m_bCaution ||
-				Dist >= m_fCautionDist [m_nCurLevel])
-				return;
-
-			m_bCaution = true;
-
-			// 警告を表示
-			GameObject.Find("CautionImage").GetComponent<CautionImage>().Display();
-		}
-
-		/// <summary>
 		/// 当たり判定（ヒット時
 		/// </summary>
 		/// <param name="col">相手オブジェクト</param>
@@ -112,9 +126,11 @@ namespace Mizuno {
 			if (m_bSE)
 				return;
 
-			SoundManager.Instance.PlaySE (6);
+			SoundManager.Instance.PlaySE(6);
 			m_bSE = true;
 		}
+
+		#endregion unity method
 	}
 
 }

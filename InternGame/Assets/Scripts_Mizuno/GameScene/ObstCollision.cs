@@ -2,11 +2,22 @@
 using System.Collections;
 
 namespace Mizuno {
+
+	/// <summary>
+	/// 障害物用あたり判定クラス
+	/// </summary>
 	public class ObstCollision : MonoBehaviour {
 
-		Player	m_Player;
+		#region variable
+
+		Player m_Player;
 
 		bool	m_bHitPlayer = false;
+
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -38,5 +49,7 @@ namespace Mizuno {
 				m_bHitPlayer = false;
 			}
 		}
+
+		#endregion unity method
 	}
 }

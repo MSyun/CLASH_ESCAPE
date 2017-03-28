@@ -4,6 +4,9 @@ using System.Collections;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// プレイヤージャンプ用アニメーター
+	/// </summary>
 	public class JumpAnimation : StateMachineBehaviour {
 
 

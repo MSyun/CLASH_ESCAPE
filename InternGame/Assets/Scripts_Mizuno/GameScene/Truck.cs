@@ -10,6 +10,8 @@ namespace Mizuno {
 	/// </summary>
 	public class Truck : MonoBehaviour {
 
+		#region enum
+
 		enum _MoveType {
 			TYPE_NONE = 0,	// 通常
 			TYPE_CHASE,		// 並走中
@@ -24,6 +26,11 @@ namespace Mizuno {
 
 			DEATH_MAX,
 		};
+
+		#endregion enum
+
+
+		#region variable
 
 		//現在のレベル
 		int m_nNowLevel = 0;
@@ -59,6 +66,10 @@ namespace Mizuno {
 		float 							m_fFanTimeNext = 0.0f;		// 次までの計測用
 		int								m_nFanNum;
 
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -81,6 +92,48 @@ namespace Mizuno {
 		void Update() {
 			Driving ();
 		}
+
+		/// <summary>
+		/// 当たり判定
+		/// </summary>
+		/// <param name="col">当たった相手</param>
+		void OnTriggerEnter(Collider col) {
+			if (!this.enabled)
+				return;
+
+			// プレイヤーを倒した
+			if (col.gameObject.tag == "Player") {
+				// 自身はもう必要ない
+				this.enabled = false;
+
+				// ゲームオーバー
+				DeathJudge(col.gameObject);
+
+				// サウンド再生
+				SoundManager.Instance.PlaySE(6);
+			}
+
+			// ゴールした
+			if (col.gameObject.tag == "Goal") {
+				// カメラを揺らす
+				Camera.main.GetComponent<ChaseCamera>().enabled = false;
+				Camera.main.GetComponent<ShakeCamera>().enabled = true;
+
+				// パーティクル
+				OnParticle();
+
+				//揺れを止める
+				gameObject.GetComponent<ShakeTruck>().enabled = false;
+
+				// 自身を止める
+				this.enabled = false;
+			}
+		}
+
+		#endregion unity method
+
+
+		#region method
 
 		/// <summary>
 		/// 前方へ進む
@@ -257,46 +310,6 @@ namespace Mizuno {
 			}
 		}
 
-
-		/// <summary>
-		/// 当たり判定
-		/// </summary>
-		/// <param name="col">当たった相手</param>
-		void OnTriggerEnter(Collider col) {
-			if (!this.enabled)
-				return;
-
-			// プレイヤーを倒した
-			if (col.gameObject.tag == "Player") {
-				// 自身はもう必要ない
-				this.enabled = false;
-
-				// ゲームオーバー
-				DeathJudge( col.gameObject );
-
-				// サウンド再生
-				SoundManager.Instance.PlaySE(6);
-			}
-
-			// ゴールした
-			if (col.gameObject.tag == "Goal") {
-				// カメラを揺らす
-				Camera.main.GetComponent<ChaseCamera>().enabled = false;
-				Camera.main.GetComponent<ShakeCamera> ().enabled = true;
-
-				// パーティクル
-				OnParticle ();
-
-				//揺れを止める
-				gameObject.GetComponent<ShakeTruck>().enabled = false;
-
-				// 自身を止める
-				this.enabled = false;
-			}
-		}
-
-
-
 		/// <summary>
 		/// プレイヤーがゴールした時
 		/// </summary>
@@ -316,5 +329,7 @@ namespace Mizuno {
 					(StaCol.GoalTipIndex - m_nGoalBeforeCnt) * StaCol.StageTipSize);
 			}
 		}
+
+		#endregion method
 	}
 }

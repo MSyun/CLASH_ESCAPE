@@ -4,10 +4,13 @@ using System.Collections;
 using Asada;
 
 namespace Mizuno {
+
 	/// <summary>
 	/// トラックがオブジェクトを潰す時の動き
 	/// </summary>
 	public class TruckSmash : MonoBehaviour {
+
+		#region variable
 
 		// つぶれるオブジェクト
 		[SerializeField]private GameObject	m_BringObj;
@@ -32,6 +35,11 @@ namespace Mizuno {
 		float	m_fObjMoveTime = 3.0f;
 
 		[SerializeField]private GameObject[]	m_StopperObj;
+
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -90,6 +98,11 @@ namespace Mizuno {
 			}
 		}
 
+		#endregion unity mehod
+
+
+		#region method
+
 		/// <summary>
 		/// Rigidbodyの処理を止める
 		/// </summary>
@@ -116,5 +129,7 @@ namespace Mizuno {
 
 			m_fSpeed = 0.0f;
 		}
+
+		#endregion method
 	}
 }

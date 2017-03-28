@@ -3,16 +3,24 @@ using System.Collections;
 
 
 namespace Mizuno {
+
 	/// <summary>
 	/// 車にゴールまで運ばれた後の動き
 	/// </summary>
 	public class PressObj : MonoBehaviour {
+
+		#region variable
 
 		public Vector3	m_vRot { get; set; }
 		public Vector3	m_vVec { get; set; }
 
 		float	m_fTime;
 		public float	m_fMaxTime { get; set; }
+
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -32,5 +40,7 @@ namespace Mizuno {
 			if (m_fTime >= m_fMaxTime)
 				this.enabled = false;
 		}
+
+		#endregion unity method
 	}
 }

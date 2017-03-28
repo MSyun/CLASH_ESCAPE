@@ -4,7 +4,12 @@ using UnityEngine.UI;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// FPS描画クラス
+	/// </summary>
 	public class FPSDrawer : MonoBehaviour {
+
+		#region Singleton
 
 		//----- シングルトン
 		protected static FPSDrawer instance;
@@ -19,8 +24,12 @@ namespace Mizuno {
 			}
 		}
 
+		#endregion Singleton
 
-		int		m_FrameCount;	// フレームカウンタ
+
+		#region variable
+
+		int m_FrameCount;	// フレームカウンタ
 		float	m_NextTime;		// 次の時間
 		float	m_fFPS;			// 現在のFPS
 
@@ -30,6 +39,22 @@ namespace Mizuno {
 		// 描画用テキスト
 		[SerializeField]private Text	m_text;
 
+		#endregion variable
+
+
+		#region method
+
+		/// <summary>
+		/// 描画の変更
+		/// </summary>
+		public void ChangeDraw() {
+			m_bDraw ^= true;
+		}
+
+		#endregion method
+
+
+		#region unity method
 
 		/// <summary>
 		/// アウェイク
@@ -75,13 +100,7 @@ namespace Mizuno {
 			}
 		}
 
-
-		/// <summary>
-		/// 描画の変更
-		/// </summary>
-		public void ChangeDraw() {
-			m_bDraw ^= true;
-		}
+		#endregion unity method
 	}
 
 }

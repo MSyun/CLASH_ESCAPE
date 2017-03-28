@@ -4,7 +4,12 @@ using System.Collections;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// クリア時のプレイヤー
+	/// </summary>
 	public class ClearPlayer : MonoBehaviour {
+
+		#region variable
 
 		Mover		m_Mover;
 		Player		m_Player;
@@ -12,6 +17,11 @@ namespace Mizuno {
 		float		m_fTime = 0.0f;
 
 		[SerializeField]private float	m_fMoveTime = 1.0f;
+
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -33,6 +43,8 @@ namespace Mizuno {
 
 			m_Mover.LocalMove (m_Player.DashSpeed * Time.deltaTime);
 		}
+
+		#endregion unity method
 	}
 
 }

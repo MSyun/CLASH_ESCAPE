@@ -5,7 +5,12 @@ using Asada;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// ステージセレクト用シーン遷移ラッパークラス
+	/// </summary>
 	public class SceneLapper : MonoBehaviour {
+
+		#region method
 
 		/// <summary>
 		/// シーンの遷移
@@ -30,6 +35,8 @@ namespace Mizuno {
 			SceneChanger.SetScene ("TruckCredit");
 			SoundManager.Instance.PlaySE (5);
 		}
+
+		#endregion method
 	}
 
 }

@@ -5,7 +5,12 @@ using Asada;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// プレイヤーの動き
+	/// </summary>
 	public class PlayerMotion : MonoBehaviour {
+
+		#region variable
 
 		// 顔の回転角度
 		[SerializeField]private float[]	m_fBoardAngle;	// 板を見ている
@@ -23,6 +28,23 @@ namespace Mizuno {
 		// 首のボーン
 		[SerializeField]private Transform[]		m_Neck;
 
+		#endregion variable
+
+
+		#region method
+
+		/// <summary>
+		/// 行動変更
+		/// </summary>
+		public void Change() {
+			m_bTrig = true;
+			GameObject.Find("Player").GetComponent<Animator>().SetTrigger("tLook");
+		}
+
+		#endregion method
+
+
+		#region unity method
 
 		/// <summary>
 		/// アウェイク
@@ -62,13 +84,6 @@ namespace Mizuno {
 			}
 		}
 
-
-		/// <summary>
-		/// 行動変更
-		/// </summary>
-		public void Change() {
-			m_bTrig = true;
-			GameObject.Find("Player").GetComponent<Animator> ().SetTrigger ("tLook");
-		}
+		#endregion unity method
 	}
 }

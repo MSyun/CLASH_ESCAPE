@@ -1,5 +1,8 @@
 ﻿namespace Mizuno {
 
+	/// <summary>
+	/// 時間変換機
+	/// </summary>
 	public class TimerConverter {
 
 		/// <summary>

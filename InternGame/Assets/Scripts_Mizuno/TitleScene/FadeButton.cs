@@ -5,16 +5,25 @@ using UnityEngine.UI;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// フェードするボタン
+	/// </summary>
 	public class FadeButton : MonoBehaviour {
 
+		#region variable
+
 		// テクスチャ
-		Image		m_Image = null;
+		Image m_Image = null;
 
 		//
 		bool		m_bSwitch = true;							// On,Offフラグ
 		float		m_fAlpha = 255.0f;							// 合計時間
-		[SerializeField]private float		m_fCycle = 60.0f;	// フェード時間
+		[SerializeField]private float		m_fCycle = 60.0f;   // フェード時間
 
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -54,6 +63,8 @@ namespace Mizuno {
 			old.a = m_fAlpha / 255.0f;
 			m_Image.color = old;
 		}
+
+		#endregion unity method
 	}
 
 }

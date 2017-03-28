@@ -3,10 +3,13 @@ using System.Collections;
 
 
 namespace Mizuno {
+
 	/// <summary>
 	/// 潰されたオブジェの動き
 	/// </summary>
 	public class SmashObj : MonoBehaviour {
+
+		#region variable
 
 		// 初期高さ
 		[SerializeField, Range(3.0f, 10.0f)]private float	m_InitHeight;
@@ -32,6 +35,11 @@ namespace Mizuno {
 
 		// SE
 		int		m_nSENum = 0;
+
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -78,5 +86,7 @@ namespace Mizuno {
 				SoundManager.Instance.PlaySE (14);
 			}
 		}
+
+		#endregion unity method
 	}
 }

@@ -3,11 +3,20 @@ using System.Collections;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// ゲームの調整
+	/// </summary>
 	public class GameController : MonoBehaviour {
+
+		#region variable
 
 		[SerializeField]private int m_nFPS = 60;
 		[SerializeField]private int	m_nVSync = 1;
 
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// アウェイク
@@ -26,6 +35,8 @@ namespace Mizuno {
 
 			this.enabled = false;
 		}
+
+		#endregion unity method
 	}
 
 }

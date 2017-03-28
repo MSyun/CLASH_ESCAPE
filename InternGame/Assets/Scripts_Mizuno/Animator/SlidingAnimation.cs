@@ -3,6 +3,9 @@ using System.Collections;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// プレイヤー用スライディングアニメーター
+	/// </summary>
 	public class SlidingAnimation : StateMachineBehaviour {
 
 		 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

@@ -4,13 +4,22 @@ using System.Collections;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// クリア用生成機
+	/// </summary>
 	public class ClearGenerator : MonoBehaviour {
+
+		#region variable
 
 		bool	m_bClear = false;	// クリア情報
 
 		[SerializeField]private GameObject	m_GameClear;
 		[SerializeField]private	GameObject	m_GameOver;
 
+		#endregion variable
+
+
+		#region method
 
 		/// <summary>
 		/// リザルトを開く
@@ -41,6 +50,8 @@ namespace Mizuno {
 			m_bClear = true;
 			Open ();
 		}
+
+		#endregion method
 	}
 
 }

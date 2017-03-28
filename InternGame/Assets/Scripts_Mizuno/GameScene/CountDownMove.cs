@@ -4,7 +4,12 @@ using System.Collections;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// カウントダウン時のオブジェクトの制御
+	/// </summary>
 	public class CountDownMove : MonoBehaviour {
+
+		#region variable
 
 		// トラック
 		[SerializeField]private Truck		m_Truck;
@@ -12,6 +17,10 @@ namespace Mizuno {
 		// 移動
 		Mover		m_Mover;
 
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -31,6 +40,8 @@ namespace Mizuno {
 			// 移動
 			m_Mover.LocalMove( m_Truck.Speed * Time.deltaTime);
 		}
+
+		#endregion unity method
 	}
 
 }

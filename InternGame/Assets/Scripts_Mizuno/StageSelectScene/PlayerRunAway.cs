@@ -4,7 +4,12 @@ using System.Collections;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// 逃げるとき用プレイヤーの行動
+	/// </summary>
 	public class PlayerRunAway : MonoBehaviour {
+
+		#region variable
 
 		// 移動
 		Mover			m_Mover;
@@ -19,7 +24,12 @@ namespace Mizuno {
 		float					m_fRotInit;		// 初期角度
 		[SerializeField]float	m_fRotAim;		// 角度
 		[SerializeField]float	m_fRotTime;		// 目的までの回転時間
-		float					m_fTime = 0.0f;	// 現在の時間
+		float					m_fTime = 0.0f; // 現在の時間
+
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -56,6 +66,8 @@ namespace Mizuno {
 			//----- 移動
 			m_Mover.LocalMove (m_fRunSpeed * Time.deltaTime);
 		}
+
+		#endregion unity method
 	}
 
 }

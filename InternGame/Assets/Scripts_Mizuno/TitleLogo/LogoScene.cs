@@ -4,15 +4,24 @@ using Asada;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// タイトルロゴ
+	/// </summary>
 	public class LogoScene : MonoBehaviour {
 
+		#region variable
+
 		// 計測時間
-		float	m_fTime = 0.0f;
+		float m_fTime = 0.0f;
 
 		// 表示時間
 		[SerializeField]private float	m_fAppearTime = 2.0f;
 
-		
+		#endregion variable
+
+
+		#region unity method
+
 		/// <summary>
 		/// 更新
 		/// </summary>
@@ -32,6 +41,8 @@ namespace Mizuno {
 				this.enabled = false;
 			}
 		}
+
+		#endregion unity method
 	}
 
 }

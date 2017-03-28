@@ -4,10 +4,13 @@ using System.Collections;
 using Asada;
 
 namespace Mizuno {
+
 	/// <summary>
 	/// トラックがオブジェクトをゴールまで運ぶ動き
 	/// </summary>
 	public class TruckPress : MonoBehaviour {
+
+		#region variable
 
 		// つれてくオブジェ
 		[SerializeField]private GameObject	m_BringObj;
@@ -23,6 +26,28 @@ namespace Mizuno {
 		float	m_fTimeFade = 0.0f;
 		bool	m_bFade = false;
 
+		#endregion variable
+
+
+		#region method
+
+		/// <summary>
+		/// Rigidbodyの処理を止める
+		/// </summary>
+		/// <param name="rigid">Rigidbody</param>
+		void RigidbodyStopper(Rigidbody rigid) {
+			if (!rigid)
+				return;
+
+			rigid.velocity = Vector3.zero;
+			rigid.angularVelocity = Vector3.zero;
+			rigid.isKinematic = true;
+		}
+
+		#endregion method
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -63,19 +88,6 @@ namespace Mizuno {
 		}
 
 		/// <summary>
-		/// Rigidbodyの処理を止める
-		/// </summary>
-		/// <param name="rigid">Rigidbody</param>
-		void RigidbodyStopper( Rigidbody rigid ) {
-			if (!rigid)
-				return;
-
-			rigid.velocity = Vector3.zero;
-			rigid.angularVelocity = Vector3.zero;
-			rigid.isKinematic = true;
-		}
-
-		/// <summary>
 		/// あたった直後の判定
 		/// </summary>
 		/// <param name="col">当たった相手</param>
@@ -106,5 +118,7 @@ namespace Mizuno {
 			// 自身を止める
 			this.enabled = false;
 		}
+
+		#endregion unity method
 	}
 }

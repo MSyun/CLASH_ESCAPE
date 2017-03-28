@@ -5,9 +5,10 @@ using Asada;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// ゴール用あたり判定クラス
+	/// </summary>
 	public class GoalCheck : MonoBehaviour {
-
-
 
 		/// <summary>
 		/// 当たり判定であたっている間

@@ -4,7 +4,12 @@ using UnityEngine.UI;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// 危険マーク
+	/// </summary>
 	public class CautionImage : MonoBehaviour {
+
+		#region variable
 
 		Image		m_Image;
 
@@ -20,6 +25,42 @@ namespace Mizuno {
 		// 
 		[SerializeField]private float	m_fDrawTime = 1.0f;
 
+		#endregion variable
+
+
+		#region method
+
+		/// <summary>
+		/// スイッチ
+		/// </summary>
+		void Switch() {
+			if (m_fTime >= m_fDrawTime) {
+				Color color = m_Image.color;
+				color.a = 0.0f;
+				m_Image.color = color;
+
+				m_fTime = 0.0f;
+				m_bDraw = false;
+			}
+		}
+
+		/// <summary>
+		/// 出現
+		/// </summary>
+		public void Display() {
+			m_bDraw = true;
+
+			Color color = m_Image.color;
+			color.a = 1.0f;
+			m_Image.color = color;
+
+			SoundManager.Instance.PlaySE(8);
+		}
+
+		#endregion method
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -49,31 +90,6 @@ namespace Mizuno {
 			}
 		}
 
-		/// <summary>
-		/// スイッチ
-		/// </summary>
-		void Switch() {
-			if (m_fTime >= m_fDrawTime) {
-				Color color = m_Image.color;
-				color.a = 0.0f;
-				m_Image.color = color;
-
-				m_fTime = 0.0f;
-				m_bDraw = false;
-			}
-		}
-
-		/// <summary>
-		/// 出現
-		/// </summary>
-		public void Display() {
-			m_bDraw = true;
-
-			Color color = m_Image.color;
-			color.a = 1.0f;
-			m_Image.color = color;
-
-			SoundManager.Instance.PlaySE (8);
-		}
+		#endregion unity method
 	}
 }

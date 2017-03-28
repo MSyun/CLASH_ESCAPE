@@ -2,10 +2,13 @@
 using System.Collections;
 
 namespace Mizuno {
+
 	/// <summary>
 	/// プレイヤーが画面にぶつかった時のカメラ
 	/// </summary>
 	public class FaceCamera : MonoBehaviour {
+
+		#region variable
 
 		// sinカーブ
 		[SerializeField]private float	m_fCycleTime = 1.0f;
@@ -16,6 +19,11 @@ namespace Mizuno {
 		private float	m_fTimeSpeed = 1.0f;
 
 		Vector3		m_vInitPos;
+
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -43,5 +51,7 @@ namespace Mizuno {
 
 			transform.position = Pos;
 		}
+
+		#endregion unity method
 	}
 }

@@ -2,10 +2,15 @@
 using System.Collections;
 using UnityEngine.UI;
 using Asada;
-using Mizuno;
 
 namespace Mizuno {
+
+	/// <summary>
+	/// 画面入力確認
+	/// </summary>
 	public class TouchCheck : MonoBehaviour {
+
+		#region unity method
 
 		/// <summary>
 		/// アウェイク
@@ -35,5 +40,7 @@ namespace Mizuno {
 				//this.enabled = false;
 			}
 		}
+
+		#endregion unity method
 	}
 }

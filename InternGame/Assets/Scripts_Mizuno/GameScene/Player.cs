@@ -4,7 +4,26 @@ using System.Collections;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// プレイヤー用クラス
+	/// </summary>
 	public class Player : MonoBehaviour {
+
+		#region enum
+
+		enum _PlayerActionMode {
+			ACTION_NORMAL = 0,  // 通常
+			ACTION_JUMP,        // ジャンプ
+			ACTION_SPEEDUP,     // ダッシュ
+			ACTION_SLIDING,     // スライディング
+
+			ACTION_MAX,
+		};
+
+		#endregion enum
+
+
+		#region variable
 
 		//----- PC上のボタン
 		[SerializeField]private KeyCode		m_KeyJump;
@@ -20,14 +39,6 @@ namespace Mizuno {
 		//----- アクションの種類
 		int	m_cActionMode;
 		bool	m_bAction = false;
-		enum _PlayerActionMode {
-			ACTION_NORMAL = 0,	// 通常
-			ACTION_JUMP,		// ジャンプ
-			ACTION_SPEEDUP,		// ダッシュ
-			ACTION_SLIDING,		// スライディング
-
-			ACTION_MAX,
-		};
 
 		//----- ジャンプ関連
 		// 地面の高さ
@@ -69,6 +80,279 @@ namespace Mizuno {
 		float	m_fAfterTime = 0.0f;
 		public void Clear() { m_bClear = true; m_Collider.enabled = false; }
 
+		#endregion variable
+
+
+		#region method
+
+		/// <summary>
+		/// Windows上での操作
+		/// </summary>
+		void WindowsInput() {
+			// ジャンプ
+			if (Input.GetKeyDown(m_KeyJump))
+				Jump();
+
+			// スライディング
+			if (Input.GetKeyDown(m_KeySliding))
+				Sliding();
+
+			// ダッシュ
+			if (Input.GetKey(m_KeyDash))
+				SpeedUp();
+			else
+				SpeedDown();
+		}
+
+		/// <summary>
+		/// ジャンプの動き
+		/// </summary>
+		void JumpMove() {
+			// ボタン入力時
+			if (m_bAction) {
+				m_fTime = 0.0f;
+				m_bAction = false;
+				m_DashParticle.Stop();
+				m_Anim.SetTrigger("tJump");
+				m_Anim.speed = 1.0f;
+				m_bJumpAnim = true;
+				SoundManager.Instance.PlaySE(9);
+				m_bDashSE = true;
+			}
+
+			// 障害物の上
+			if (m_bOn) return;
+
+			// 時間加算
+			m_fTime += Time.deltaTime;
+
+			// 座標変更
+			Vector3 pos = transform.position;
+			pos.y = m_fV0 * m_fTime - (1.0f / 2.0f * m_fGravity * (m_fTime * m_fTime));
+			pos.y += m_fGroundHeight;
+			// 地面判定
+			if (pos.y <= m_fGroundHeight) {
+				pos.y = m_fGroundHeight;
+
+				if (m_bDashSE) {
+					SoundManager.Instance.PlaySE(10);
+					m_bDashSE = false;
+				}
+
+				// ジャンプアニメーション終了
+				if (!m_bJumpAnim) {
+					if (m_bDash)
+						ChangeAction(_PlayerActionMode.ACTION_SPEEDUP);
+					else
+						ChangeAction(_PlayerActionMode.ACTION_NORMAL);
+					m_DashParticle.Play();
+				}
+			}
+
+			// 更新
+			transform.position = pos;
+		}
+
+		/// <summary>
+		/// スライディングの動き
+		/// </summary>
+		void SlidingMove() {
+			// ボタン入力時
+			if (m_bAction) {
+				m_fTime = 0.0f;
+				m_bAction = false;
+				// あたり判定変更
+				ChangeCollision(true);
+				m_DashParticle.Stop();
+				m_Anim.SetTrigger("tSliding");
+				m_bSlidingAnim = true;
+
+				// サウンド再生
+				SoundManager.Instance.PlaySE(7);
+				m_Anim.speed = 1.0f;
+			}
+			// 1つ出す
+			m_DashParticle.Emit(1);
+
+			// 時間加算
+			m_fTime += Time.deltaTime;
+
+			// 一定時間経過後戻す
+			if (!m_bSlidingAnim) {
+				if (m_bDash)
+					ChangeAction(_PlayerActionMode.ACTION_SPEEDUP);
+				else
+					ChangeAction(_PlayerActionMode.ACTION_NORMAL);
+				ChangeCollision(false);
+				m_DashParticle.Play();
+			}
+		}
+
+		/// <summary>
+		/// ダッシュの動き
+		/// </summary>
+		void DashMove() {
+			// スピードアップ
+			if (m_bDash) ChangeSpeed(m_fSpeedAdd[m_nCurLevel]);
+			else ChangeSpeed(-m_fSpeedAdd[m_nCurLevel]);
+
+			// アニメーション速度の変更
+			m_Anim.speed = AnimSpeed(m_fAnimRunMinTime, m_fAnimRunMaxTime);
+		}
+
+		/// <summary>
+		/// 速度変更
+		/// </summary>
+		/// <param name="speed">速度</param>
+		void ChangeSpeed(float speed) {
+			m_fSpeedDash[m_nCurLevel] += speed;
+
+			// 値制限
+			m_fSpeedDash[m_nCurLevel] = Mathf.Clamp(m_fSpeedDash[m_nCurLevel], m_fSpeedMin[m_nCurLevel], m_fSpeedMax[m_nCurLevel]);
+		}
+
+		/// <summary>
+		/// アクションの変更
+		/// </summary>
+		/// <param name="_action">変更するアクション</param>
+		void ChangeAction(_PlayerActionMode _action) {
+			m_cActionMode = (int)_action;
+		}
+
+
+		/// <summary>
+		/// アニメーション速度計算
+		/// </summary>
+		/// <returns>新しい速度</returns>
+		/// <param name="Min">最低速度</param>
+		/// <param name="Max">最高速度</param>
+		float AnimSpeed(float Min, float Max) {
+			// 現在の移動速度の割合
+			float SpeedRate = (m_fSpeedDash[m_nCurLevel] - m_fSpeedMin[m_nCurLevel]) / (m_fSpeedMax[m_nCurLevel] - m_fSpeedMin[m_nCurLevel]);
+			// アニメーションの加速度
+			float AnimAccel = SpeedRate * (Max - Min);
+
+			return AnimAccel + Min;
+		}
+
+
+		/// <summary>
+		/// ジャンプ入力
+		/// </summary>
+		public void Jump() {
+			// ジャンプ中か確認
+			if (m_cActionMode == (int)_PlayerActionMode.ACTION_JUMP ||
+				m_cActionMode == (int)_PlayerActionMode.ACTION_SLIDING) {
+				return;
+			}
+
+			// 使用確認
+			if (!this.enabled)
+				return;
+
+			ChangeAction(_PlayerActionMode.ACTION_JUMP);
+			m_bAction = true;
+		}
+
+		/// <summary>
+		/// 速度アップ入力
+		/// </summary>
+		public void SpeedUp() {
+			m_bDash = true;
+
+			// 実行可能かチェック
+			if (m_cActionMode != (int)_PlayerActionMode.ACTION_NORMAL &&
+				m_cActionMode != (int)_PlayerActionMode.ACTION_SPEEDUP) {
+				return;
+			}
+
+			ChangeAction(_PlayerActionMode.ACTION_SPEEDUP);
+		}
+
+		/// <summary>
+		/// 速度ダウン入力
+		/// </summary>
+		public void SpeedDown() {
+			m_bDash = false;
+		}
+
+		/// <summary>
+		/// スライディング入力
+		/// </summary>
+		public void Sliding() {
+			// 実行可能かチェック
+			if (m_cActionMode == (int)_PlayerActionMode.ACTION_SLIDING ||
+			   	m_cActionMode == (int)_PlayerActionMode.ACTION_JUMP) {
+				return;
+			}
+			ChangeAction(_PlayerActionMode.ACTION_SLIDING);
+			m_bAction = true;
+		}
+
+		/// <summary>
+		/// スライディング用当たり判定の変更
+		/// </summary>
+		/// <param name="Trig">スライディング確認</param>
+		void ChangeCollision(bool Trig) {
+			if (Trig) {
+				// スライディング中
+				m_Collider.center = new Vector3(0f, 0.25f, 0f);
+				m_Collider.size = new Vector3(1f, 0.5f, 2f);
+			} else {
+				// 通常
+				m_Collider.center = new Vector3(0f, 1f, 0f);
+				m_Collider.size = new Vector3(1f, 2f, 1f);
+			}
+		}
+
+		/// <summary>
+		/// ジャンプアニメーション終了
+		/// </summary>
+		public void JumpAnimEnd() {
+			m_bJumpAnim = false;
+		}
+
+		/// <summary>
+		/// スライディングアニメーション終了
+		/// </summary>
+		public void SlidingAnimEnd() {
+			m_bSlidingAnim = false;
+		}
+
+		/// <summary>
+		/// クリア後の行動
+		/// </summary>
+		public void ClearMove() {
+			m_fAfterTime += Time.deltaTime;
+
+			if (m_fAfterTime >= 8.0f)
+				Destroy(this);
+
+			m_Move.LocalMove(DashSpeed * Time.deltaTime);
+
+			if (m_bJumpAnim)
+				JumpMove();
+		}
+
+		/// <summary>
+		/// ヒット時呼び出し
+		/// </summary>
+		void Hit() {
+			m_bHit = true;
+		}
+
+		/// <summary>
+		/// ヒット中に障害物が消えた
+		/// </summary>
+		public void DeleteObst() {
+			m_bHit = false;
+			m_bOn = false;
+		}
+
+		#endregion method
+
+
+		#region unity method
 
 		/// <summary>
 		/// アウェイク
@@ -145,264 +429,6 @@ namespace Mizuno {
 			};
 		}
 
-
-		/// <summary>
-		/// Windows上での操作
-		/// </summary>
-		void WindowsInput() {
-			// ジャンプ
-			if (Input.GetKeyDown (m_KeyJump))
-				Jump ();
-
-			// スライディング
-			if (Input.GetKeyDown (m_KeySliding))
-				Sliding ();
-
-			// ダッシュ
-			if (Input.GetKey (m_KeyDash))
-				SpeedUp ();
-			else
-				SpeedDown ();
-		}
-
-		/// <summary>
-		/// ジャンプの動き
-		/// </summary>
-		void JumpMove() {
-			// ボタン入力時
-			if (m_bAction) {
-				m_fTime = 0.0f;
-				m_bAction = false;
-				m_DashParticle.Stop ();
-				m_Anim.SetTrigger ("tJump");
-				m_Anim.speed = 1.0f;
-				m_bJumpAnim = true;
-				SoundManager.Instance.PlaySE (9);
-				m_bDashSE = true;
-			}
-
-			// 障害物の上
-			if (m_bOn)	return;
-
-			// 時間加算
-			m_fTime += Time.deltaTime;
-
-			// 座標変更
-			Vector3 pos = transform.position;
-			pos.y = m_fV0 * m_fTime - (1.0f / 2.0f * m_fGravity *( m_fTime * m_fTime));
-			pos.y += m_fGroundHeight;
-			// 地面判定
-			if (pos.y <= m_fGroundHeight) {
-				pos.y = m_fGroundHeight;
-
-				if (m_bDashSE) {
-					SoundManager.Instance.PlaySE (10);
-					m_bDashSE = false;
-				}
-
-				// ジャンプアニメーション終了
-				if (!m_bJumpAnim) {
-					if (m_bDash)
-						ChangeAction (_PlayerActionMode.ACTION_SPEEDUP);
-					else
-						ChangeAction (_PlayerActionMode.ACTION_NORMAL);
-					m_DashParticle.Play ();
-				}
-			}
-
-			// 更新
-			transform.position = pos;
-		}
-
-		/// <summary>
-		/// スライディングの動き
-		/// </summary>
-		void SlidingMove() {
-			// ボタン入力時
-			if (m_bAction) {
-				m_fTime = 0.0f;
-				m_bAction = false;
-				// あたり判定変更
-				ChangeCollision(true);
-				m_DashParticle.Stop ();
-				m_Anim.SetTrigger ("tSliding");
-				m_bSlidingAnim = true;
-
-				// サウンド再生
-				SoundManager.Instance.PlaySE(7);
-				m_Anim.speed = 1.0f;
-			}
-			// 1つ出す
-			m_DashParticle.Emit (1);
-
-			// 時間加算
-			m_fTime += Time.deltaTime;
-
-			// 一定時間経過後戻す
-			if( !m_bSlidingAnim ) {
-				if (m_bDash)
-					ChangeAction (_PlayerActionMode.ACTION_SPEEDUP);
-				else
-					ChangeAction (_PlayerActionMode.ACTION_NORMAL);
-				ChangeCollision(false);
-				m_DashParticle.Play ();
-			}
-		}
-
-		/// <summary>
-		/// ダッシュの動き
-		/// </summary>
-		void DashMove() {
-			// スピードアップ
-			if (m_bDash)	ChangeSpeed (m_fSpeedAdd[m_nCurLevel]);
-			else 			ChangeSpeed (-m_fSpeedAdd[m_nCurLevel]);
-
-			// アニメーション速度の変更
-			m_Anim.speed = AnimSpeed( m_fAnimRunMinTime, m_fAnimRunMaxTime );
-		}
-
-		/// <summary>
-		/// 速度変更
-		/// </summary>
-		/// <param name="speed">速度</param>
-		void ChangeSpeed( float speed ) {
-			m_fSpeedDash[m_nCurLevel] += speed;
-
-			// 値制限
-			m_fSpeedDash[m_nCurLevel] = Mathf.Clamp( m_fSpeedDash[m_nCurLevel], m_fSpeedMin[m_nCurLevel], m_fSpeedMax[m_nCurLevel] );
-		}
-
-		/// <summary>
-		/// アクションの変更
-		/// </summary>
-		/// <param name="_action">変更するアクション</param>
-		void ChangeAction( _PlayerActionMode _action ) {
-			m_cActionMode = (int)_action;
-		}
-
-
-		/// <summary>
-		/// アニメーション速度計算
-		/// </summary>
-		/// <returns>新しい速度</returns>
-		/// <param name="Min">最低速度</param>
-		/// <param name="Max">最高速度</param>
-		float AnimSpeed(float Min, float Max) {
-			// 現在の移動速度の割合
-			float SpeedRate = (m_fSpeedDash[m_nCurLevel] - m_fSpeedMin[m_nCurLevel]) / (m_fSpeedMax[m_nCurLevel] - m_fSpeedMin[m_nCurLevel]);
-			// アニメーションの加速度
-			float AnimAccel = SpeedRate * (Max - Min);
-
-			return AnimAccel + Min;
-		}
-
-
-		/// <summary>
-		/// ジャンプ入力
-		/// </summary>
-		public void Jump() {
-			// ジャンプ中か確認
-			if (m_cActionMode == (int)_PlayerActionMode.ACTION_JUMP ||
-				m_cActionMode == (int)_PlayerActionMode.ACTION_SLIDING) {
-				return;
-			}
-
-			// 使用確認
-			if (!this.enabled)
-				return;
-
-			ChangeAction (_PlayerActionMode.ACTION_JUMP);
-			m_bAction = true;
-		}
-
-		/// <summary>
-		/// 速度アップ入力
-		/// </summary>
-		public void SpeedUp() {
-			m_bDash = true;
-
-			// 実行可能かチェック
-			if (m_cActionMode != (int)_PlayerActionMode.ACTION_NORMAL &&
-				m_cActionMode != (int)_PlayerActionMode.ACTION_SPEEDUP) {
-				return;
-			}
-
-			ChangeAction (_PlayerActionMode.ACTION_SPEEDUP);
-		}
-
-		/// <summary>
-		/// 速度ダウン入力
-		/// </summary>
-		public void SpeedDown() {
-			m_bDash = false;
-		}
-
-		/// <summary>
-		/// スライディング入力
-		/// </summary>
-		public void Sliding() {
-			// 実行可能かチェック
-			if (m_cActionMode == (int)_PlayerActionMode.ACTION_SLIDING ||
-			   	m_cActionMode == (int)_PlayerActionMode.ACTION_JUMP) {
-				return;
-			}
-			ChangeAction (_PlayerActionMode.ACTION_SLIDING);
-			m_bAction = true;
-		}
-
-		/// <summary>
-		/// スライディング用当たり判定の変更
-		/// </summary>
-		/// <param name="Trig">スライディング確認</param>
-		void ChangeCollision(bool Trig ) {
-			if (Trig) {
-				// スライディング中
-				m_Collider.center	= new Vector3 (0f, 0.25f, 0f);
-				m_Collider.size		= new Vector3 (1f, 0.5f, 2f);
-			} else {
-				// 通常
-				m_Collider.center	= new Vector3 (0f, 1f, 0f);
-				m_Collider.size		= new Vector3 (1f, 2f, 1f);
-			}
-		}
-			
-		/// <summary>
-		/// ジャンプアニメーション終了
-		/// </summary>
-		public void JumpAnimEnd() {
-			m_bJumpAnim = false;
-		}
-
-		/// <summary>
-		/// スライディングアニメーション終了
-		/// </summary>
-		public void SlidingAnimEnd() {
-			m_bSlidingAnim = false;
-		}
-
-		/// <summary>
-		/// クリア後の行動
-		/// </summary>
-		public void ClearMove() {
-			m_fAfterTime += Time.deltaTime;
-
-			if (m_fAfterTime >= 8.0f)
-				Destroy (this);
-
-			m_Move.LocalMove (DashSpeed * Time.deltaTime);
-
-			if( m_bJumpAnim )
-				JumpMove ();
-		}
-
-		/// <summary>
-		/// ヒット時呼び出し
-		/// </summary>
-		void Hit() {
-			m_bHit = true;
-		}
-
-
 		/// <summary>
 		/// 当たり判定であたった瞬間
 		/// </summary>
@@ -413,15 +439,14 @@ namespace Mizuno {
 				BoxCollider Pcol = m_Collider;
 
 				//プレイヤーが上から来たのか?            
-				if (transform.position.y + Pcol.center.y - Pcol.size.y * 0.5f >= col.transform.position.y + col.transform.localScale.y * 0.5f)
-				{
+				if (transform.position.y + Pcol.center.y - Pcol.size.y * 0.5f >= col.transform.position.y + col.transform.localScale.y * 0.5f) {
 					//上から
-	//				Debug.Log ("のった");
+					//				Debug.Log ("のった");
 					m_bOn = true;
-					SoundManager.Instance.PlaySE (10);
+					SoundManager.Instance.PlaySE(10);
 				} else {
-					Hit ();
-	//				Debug.Log ("あたった");
+					Hit();
+					//				Debug.Log ("あたった");
 				}
 			}
 		}
@@ -438,12 +463,7 @@ namespace Mizuno {
 			}
 		}
 
-		/// <summary>
-		/// ヒット中に障害物が消えた
-		/// </summary>
-		public void DeleteObst() {
-			m_bHit = false;
-			m_bOn = false;
-		}
+
+		#endregion unity method
 	}
 }

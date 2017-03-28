@@ -4,7 +4,12 @@ using System.Collections;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// ボード回転用クラス
+	/// </summary>
 	public class RotateBoard : MonoBehaviour {
+
+		#region variable
 
 		// 回転速度
 		[SerializeField]private Vector3		m_vRotSpeed;
@@ -15,6 +20,10 @@ namespace Mizuno {
 		// 移動
 		Mover		m_Mover;
 
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -37,5 +46,7 @@ namespace Mizuno {
 			pos += (m_vMoveSpeed * Time.deltaTime * 60.0f);
 			transform.position = pos;
 		}
+
+		#endregion unity method
 	}
 }

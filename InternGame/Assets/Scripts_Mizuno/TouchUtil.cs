@@ -1,10 +1,21 @@
 ﻿using UnityEngine;
 
 namespace Mizuno {
+
+	/// <summary>
+	/// 入力便利クラス
+	/// </summary>
 	public static class TouchUtil {
+
+		#region variable
 
 		// タッチ座標保存
 		private static Vector3 TouchPosition = Vector3.zero;
+
+		#endregion variable
+
+
+		#region method
 
 		/// <summary>
 		/// 入力情報を取得
@@ -58,8 +69,11 @@ namespace Mizuno {
 		public static Vector3 GetTouchWorldPosition( Camera camera ) {
 			return camera.ScreenToWorldPoint (GetTouchPosition ());
 		}
+
+		#endregion method
 	}
 
+	#region enum
 
 	/// <summary>
 	/// 入力情報の拡張
@@ -85,4 +99,5 @@ namespace Mizuno {
 		Canceled = 4,
 	}
 
+	#endregion enum
 }

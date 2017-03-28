@@ -5,10 +5,15 @@ using Mizuno;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// タイトルシーン用プレイヤー
+	/// </summary>
 	public class TitlePlayer : MonoBehaviour {
 
+		#region variable
+
 		//----- 移動
-		Mover			m_Mover;
+		Mover m_Mover;
 		// 速度
 		[SerializeField]private float		m_fSpeed = 10.0f;
 
@@ -24,7 +29,26 @@ namespace Mizuno {
 		float					m_fRotInit;		// 初期角度
 		[SerializeField]float	m_fRotAim;		// 角度
 		[SerializeField]float	m_fRotTime;		// 目的までの回転時間
-		float					m_fTime = 0.0f;	// 現在の時間
+		float					m_fTime = 0.0f; // 現在の時間
+
+		#endregion variable
+
+
+		#region method
+
+		/// <summary>
+		/// 行動の変更
+		/// </summary>
+		public void Change() {
+			m_bTrig = true;
+			// アニメーション
+			m_Anim.SetTrigger("tWalk");
+		}
+
+		#endregion method
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -75,15 +99,7 @@ namespace Mizuno {
 			}
 		}
 
-
-		/// <summary>
-		/// 行動の変更
-		/// </summary>
-		public void Change() {
-			m_bTrig = true;
-			// アニメーション
-			m_Anim.SetTrigger ("tWalk");
-		}
+		#endregion unity method
 	}
 
 }

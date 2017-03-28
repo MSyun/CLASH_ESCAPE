@@ -2,13 +2,16 @@
 using System.Collections;
 
 namespace Mizuno {
+
 	/// <summary>
 	/// プレイヤーが車に吹き飛ばされた時の動き
 	/// </summary>
 	public class PlayerImpactCamera : MonoBehaviour {
 
+		#region variable
+
 		// ベジエ関係
-		Vector3		m_vStartPosition;
+		Vector3 m_vStartPosition;
 		[SerializeField]private Vector3		m_vStartVec;
 		Vector3		m_vGoalPosition;
 		[SerializeField]private Vector3		m_vGoalVec;
@@ -38,6 +41,10 @@ namespace Mizuno {
 		[SerializeField]private float[]		m_fAngle;
 		[SerializeField]private int[]		m_nAxis;
 
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -96,6 +103,11 @@ namespace Mizuno {
 			}
 		}
 
+		#endregion unity method
+
+
+		#region method
+
 		/// <summary>
 		/// 飛行
 		/// </summary>
@@ -142,5 +154,7 @@ namespace Mizuno {
 			m_bSlideFall = true;
 			m_fTime = 0.0f;
 		}
+
+		#endregion method
 	}
 }

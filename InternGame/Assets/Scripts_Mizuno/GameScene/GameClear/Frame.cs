@@ -5,13 +5,23 @@ using UnityEngine.UI;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// ゲームクリア時のフレーム
+	/// </summary>
 	public class Frame : MonoBehaviour {
+
+		#region variable
 
 		// 画像
 		Image	m_Image;
 
 		float							m_fAlpha = 0.0f;	// 現在のアルファ値
-		[SerializeField]private float	m_fCycle = 1.0f;	// 出現時間
+		[SerializeField]private float	m_fCycle = 1.0f;    // 出現時間
+
+		#endregion variable
+
+
+		#region unity method
 
 		/// <summary>
 		/// 初期化
@@ -37,6 +47,8 @@ namespace Mizuno {
 			old.a = m_fAlpha;
 			m_Image.color = old;
 		}
+
+		#endregion unity method
 	}
 
 }

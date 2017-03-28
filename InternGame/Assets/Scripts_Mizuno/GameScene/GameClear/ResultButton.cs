@@ -5,7 +5,12 @@ using Asada;
 
 namespace Mizuno {
 
+	/// <summary>
+	/// リザルトボタン用クラス
+	/// </summary>
 	public class ResultButton : MonoBehaviour {
+
+		#region method
 
 		/// <summary>
 		/// 再スタートを押された
@@ -22,6 +27,8 @@ namespace Mizuno {
 			SceneChanger.SetScene ("StageSelect");
 			SoundManager.Instance.PlaySE (5);
 		}
+
+		#endregion method
 	}
 
 }
