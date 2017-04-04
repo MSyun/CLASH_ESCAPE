@@ -18,12 +18,26 @@ namespace Mizuno {
 		#region method
 
 		/// <summary>
+		/// タッチ判定をするか確認
+		/// </summary>
+		/// <returns>true. タッチ : false. マウス</returns>
+		static bool CheckTouch() {
+			if (Application.isEditor ||
+				Application.platform == RuntimePlatform.WindowsPlayer ||
+				Application.platform == RuntimePlatform.OSXPlayer) {
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
 		/// 入力情報を取得
 		/// </summary>
 		/// <returns>入力の種類</returns>
 		public static TouchInfo GetTouch() {
 			// エディター確認
-			if (Application.isEditor) {
+			if (!CheckTouch()) {
 				if (Input.GetMouseButtonDown (0))	return TouchInfo.Began;
 				if (Input.GetMouseButton (0))		return TouchInfo.Moved;
 				if (Input.GetMouseButtonUp (0))		return TouchInfo.Ended;
@@ -43,7 +57,7 @@ namespace Mizuno {
 		/// <returns>入力された座標</returns>
 		public static Vector3 GetTouchPosition() {
 			// エディター確認
-			if (Application.isEditor) {
+			if (!CheckTouch()) {
 				TouchInfo touch = TouchUtil.GetTouch ();
 				if (touch != TouchInfo.None) {
 					return Input.mousePosition;

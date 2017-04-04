@@ -399,7 +399,9 @@ namespace Mizuno {
 			}
 
 			// PC上での操作
-			if (Application.isEditor) {
+			if (Application.isEditor ||
+				Application.platform == RuntimePlatform.WindowsPlayer ||
+				Application.platform == RuntimePlatform.OSXPlayer) {
 				WindowsInput ();
 			}
 
